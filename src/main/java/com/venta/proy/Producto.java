@@ -7,7 +7,11 @@ import javax.persistence.*;
 //import javax.validation.constraints.NotEmpty;
 //import javax.validation.constraints.Size;
 
-import com.venta.proy.Factura;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.sun.istack.NotNull;
+
+import com.venta.proy.Detalle;
+
 
 
 
@@ -19,23 +23,29 @@ public class Producto {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
 
-	
+	@NotNull
 	private String nombre;
+	
 	private int stock;
 	private String estado;
 	
 	
 	//Uno a uno
+	@JsonIgnore
 	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="categoria_id")
 	private Categoria categoria;
 	
 	
 	//bi-directional many-to-many association to Factura
-		@ManyToMany(mappedBy="productos", fetch = FetchType.EAGER)
-		private List<Factura> facturas;
+		//@ManyToMany(mappedBy="productos", fetch = FetchType.EAGER)
+		//private List<Factura> facturas;
+	/*
+	@JsonIgnore
+	@OneToMany(mappedBy="producto", fetch=FetchType.EAGER)
+	private List<Detalle> detalles;
 	
-	
+	*/
 	
 	
 	public Producto(int id, String nombre, int stock, String estado, Categoria categoria) {
@@ -96,13 +106,26 @@ public class Producto {
 	public void setCategoria(Categoria categoria) {
 		this.categoria = categoria;
 	}
-	
-	public List<Factura> getFacturas() {
-		return this.facturas;
+	/*
+	public List<Detalle> getDetalles() {
+		return this.detalles;
 	}
 
-	public void setFacturas(List<Factura> facturas) {
-		this.facturas = facturas;
+	public void setDetalles(List<Detalle> detalles) {
+		this.detalles = detalles;
 	}
 
+	public Detalle addDetalle(Detalle detalle) {
+		getDetalles().add(detalle);
+		detalle.setProducto(this);
+
+		return detalle;
+	}
+
+	public Detalle removeDetalle(Detalle detalle) {
+		getDetalles().remove(detalle);
+		detalle.setProducto(null);
+
+		return detalle;
+	}*/
 }

@@ -11,11 +11,13 @@ import java.util.List;
  * 
  */
 @Entity
+@Table(name="factura")
 @NamedQuery(name="Factura.findAll", query="SELECT f FROM Factura f")
 public class Factura implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
+	@Column(unique=true, nullable=false)
 	private int id;
 
 	@Temporal(TemporalType.TIMESTAMP)
@@ -24,22 +26,13 @@ public class Factura implements Serializable {
 	private int nrofactura;
 
 	//bi-directional many-to-one association to Cliente
-	@ManyToOne
+	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="idcliente")
 	private Cliente cliente;
 
-	//bi-directional many-to-many association to Producto
-	@ManyToMany
-	@JoinTable(
-		name="detalle"
-		, joinColumns={
-			@JoinColumn(name="factura_id")
-			}
-		, inverseJoinColumns={
-			@JoinColumn(name="producto_id")
-			}
-		)
-	private List<Producto> productos;
+	//bi-directional many-to-one association to Detalle
+	@OneToMany(mappedBy="factura")
+	private List<Detalle> detalles;
 
 	public Factura() {
 	}
@@ -76,12 +69,26 @@ public class Factura implements Serializable {
 		this.cliente = cliente;
 	}
 
-	public List<Producto> getProductos() {
-		return this.productos;
+	public List<Detalle> getDetalles() {
+		return this.detalles;
 	}
 
-	public void setProductos(List<Producto> productos) {
-		this.productos = productos;
+	public void setDetalles(List<Detalle> detalles) {
+		this.detalles = detalles;
+	}
+
+	public Detalle addDetalle(Detalle detalle) {
+		getDetalles().add(detalle);
+		detalle.setFactura(this);
+
+		return detalle;
+	}
+
+	public Detalle removeDetalle(Detalle detalle) {
+		getDetalles().remove(detalle);
+		detalle.setFactura(null);
+
+		return detalle;
 	}
 
 }

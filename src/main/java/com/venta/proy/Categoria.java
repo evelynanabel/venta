@@ -6,6 +6,7 @@ import java.util.List;
 import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.sun.istack.NotNull;
 
 
 
@@ -17,6 +18,7 @@ public class Categoria implements Serializable {
 	
 	@Id
 	private int id;
+	@NotNull
 	private String denominacion;
 	
 	@JsonIgnore

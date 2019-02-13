@@ -2,8 +2,10 @@ package com.venta.proy;
 
 import java.io.Serializable;
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.sun.istack.NotNull;
 
 import java.util.List;
 
@@ -18,14 +20,18 @@ public class Cliente implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
+	@NotNull
 
 	private String apellido;
-
+	@NotNull
+	@Column(length=255)
 	private String direccion;
-
+	@NotNull
+	@Size(min=8, max=8)
 	private String dni;
-
+	@NotNull
 	private String nombre;
 	private String estado;
 
