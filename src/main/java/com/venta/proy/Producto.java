@@ -31,7 +31,7 @@ public class Producto {
 	
 	
 	//Uno a uno
-	@JsonIgnore
+	
 	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="categoria_id")
 	private Categoria categoria;

@@ -2,6 +2,9 @@ package com.venta.proy;
 
 import java.io.Serializable;
 import javax.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.Date;
 import java.util.List;
 
@@ -26,12 +29,14 @@ public class Factura implements Serializable {
 	private int nrofactura;
 
 	//bi-directional many-to-one association to Cliente
-	@ManyToOne(fetch=FetchType.LAZY)
+	
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name="idcliente")
 	private Cliente cliente;
 
 	//bi-directional many-to-one association to Detalle
-	@OneToMany(mappedBy="factura")
+	@JsonIgnore
+	@OneToMany(mappedBy="factura", cascade=CascadeType.ALL,orphanRemoval=true, fetch = FetchType.EAGER)
 	private List<Detalle> detalles;
 
 	public Factura() {

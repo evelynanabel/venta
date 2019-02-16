@@ -5,6 +5,13 @@
 	version="2.0">
 
 	<persistence-unit name="venta">
+	<class>com.venta.proy.Categoria</class>
+	  <class>com.venta.proy.Producto</class>
+	  <class>com.venta.proy.Cliente</class>
+	  <class>com.venta.proy.Detalle</class>
+	  <class>com.venta.proy.Factura</class>
+	  <class>com.venta.proy.Usuario</class>
+	  <class>com.venta.proy.Rol</class>
 	  
 		<properties>
 			<property name="hibernate.show_sql" value="true" />

@@ -6,12 +6,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.venta.proy.Categoria;
 import com.venta.proy.Cliente;
+import com.venta.proy.Detalle;
 import com.venta.proy.Factura;
 import com.venta.proy.Producto;
 import com.venta.proy.Rol;
 import com.venta.proy.Usuario;
 import com.venta.repositorios.CategoriaRepository;
 import com.venta.repositorios.ClienteRepository;
+import com.venta.repositorios.DetalleRepository;
 import com.venta.repositorios.FacturaRepository;
 import com.venta.repositorios.ProductoRepository;
 import com.venta.repositorios.RolRepository;
@@ -33,6 +35,8 @@ public class ServicioVentaJPA implements ServicioVenta {
 	private RolRepository reporol;
 	@Autowired
 	private FacturaRepository repofactura;
+	@Autowired
+	private DetalleRepository repodetalle;
 
 	// producto
 	public ProductoRepository getRepoproducto() {
@@ -87,7 +91,17 @@ public class ServicioVentaJPA implements ServicioVenta {
 	public void setRepofactura(FacturaRepository repofactura) {
 		this.repofactura = repofactura;
 	}
+	
+	// Detalle
+		public DetalleRepository getRepodetalle() {
+			return repodetalle;
+		}
 
+		public void setRepodetalle(DetalleRepository repodetalle) {
+			this.repodetalle = repodetalle;
+		}
+
+		
 	// producto
 	public Producto findOneProd(Integer id) {
 		return repoproducto.findOne(id);
@@ -202,6 +216,26 @@ public class ServicioVentaJPA implements ServicioVenta {
 	public void deleteFac(Factura factura) {
 		repofactura.delete(factura);
 	}
+	
+	// Detalle
+		public Detalle findOneDet(Integer id) {
+			return repodetalle.findOne(id);
+		}
+
+		public Iterable<Detalle> findAllDet() {
+			return repodetalle.findAll();
+		}
+
+		@Transactional
+		public void saveDet(Detalle detalle) {
+			repodetalle.save(detalle);
+		}
+
+		@Transactional
+		public void deleteDet(Detalle detalle) {
+			repodetalle.delete(detalle);
+		}
+	
 
 	@Override
 	public Iterable<Producto> findByEstado(String estado) {

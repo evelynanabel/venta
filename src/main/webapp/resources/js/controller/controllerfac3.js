@@ -1,47 +1,63 @@
-var app = angular.module("mcliente", []);
-app.controller("clienteCtrl", ['$scope', '$http', function ($scope, $http)
+var app = angular.module("mfactura", []);
+app.controller("facturaCtrl", ['$scope', '$http', function ($scope, $http)
 {
 
 // Variable inicial para el indice del array
     var idx=0;
     $scope.objmax= {};
-    $scope.clientes = [];
-    $scope.clienteActual = {};
+    $scope.facturas = [];
+    $scope.facturaActual = {};
 
     $scope.vista = "formulario";
+    var f = new Date();
+    $scope.fechaActual = addZero(f.getDate()) + "-" + addZero(f.getMonth() +1) + "-" + f.getFullYear();
     $scope.navegacion = true;
     $scope.edit = false;
     $scope.sololectura = true;
     $scope.botones ="noeditable";
 
+    $scope.detalle= [];
+	$scope.listaDetalle= [];
+
 
 
     $http({
         method: 'GET',
+        url: '/apifactura/all'
+    }).success(function (data) {
+        $scope.facturas = data;
+    });
+
+    //Datos para la lista desplegable
+    $http({
+        method: 'GET',
         url: '/apicliente/all'
     }).success(function (data) {
-        $scope.clientes = data;
+        $scope.categorias = data;
     });
+
 
       $scope.listar = function () {
         $http({
             method: 'GET',
-            url: '/apicliente/all'
+            url: '/apifactura/all'
         }).success(function (data) {
-            $scope.clientes = data;
+            $scope.facturas = data;
         });
     };
 
 
     $scope.nuevo = function () {
     	 	
-    	$scope.clienteActual.nombre = " ";
-    	$scope.clienteActual.apellido = " ";
-    	$scope.clienteActual.direccion = " ";
-    	$scope.clienteActual.dni = " ";
+    	$scope.facturaActual.idcliente= " ";
+    	$scope.facturaActual.fecha= " ";
+    	$scope.facturaActual.nrofactura = " ";
+    	
         $scope.botones ="editable";
         $scope.sololectura = false;
         $scope.navegacion = false;
+        $scope.facturaActual.detalles=$scope.detalle;
+        $scope.facturaActual.cliente=$scope.clienteActual;
     };
 
     $scope.buscar = function () {
@@ -66,11 +82,11 @@ app.controller("clienteCtrl", ['$scope', '$http', function ($scope, $http)
 
     $scope.seleccionar = function (id) {
         var idx = -1;
-        var clienteArray = eval($scope.clientes);
-        for (var i = 0; i < clienteArray.length; i++) {
-            if (clienteArray[i].id === id) {
+        var facturaArray = eval($scope.facturas);
+        for (var i = 0; i < facturaArray.length; i++) {
+            if (facturaArray[i].id === id) {
                 idx = i;
-                $scope.clienteActual = $scope.clientes[idx];
+                $scope.facturaActual = $scope.facturas[idx];
                 break;
             }
         }
@@ -84,12 +100,12 @@ app.controller("clienteCtrl", ['$scope', '$http', function ($scope, $http)
         if ($scope.edit === false) {
             $http({
                 method: 'POST',
-                url: '/apicliente/save',
+                url: '/apifactura/save',
                 data: {
-                    'nombre': $scope.clienteActual.nombre,
-                    'apellido': $scope.clienteActual.apellido,
-                    'direccion':$scope.clienteActual.direccion,
-                    'dni':$scope.clienteActual.dni
+                    'idcliente': $scope.facturaActual.idcliente,
+                    'fecha': $scope.facturaActual.fecha,
+                    'nrofactura':$scope.facturaActual.nrofactura
+                    
                     
                      }
             }).success(function (data, status, headers, config) {
@@ -105,12 +121,11 @@ app.controller("clienteCtrl", ['$scope', '$http', function ($scope, $http)
             $http({
 
                 method: 'PUT',
-                url: '/apicliente/update/' + $scope.clienteActual.id,
+                url: '/apifactura/update/' + $scope.facturaActual.id,
                 data: {
-                	 'nombre': $scope.clienteActual.nombre,
-                	 'apellido': $scope.clienteActual.apellido,
-                     'direccion':$scope.clienteActual.direccion,
-                     'dni':$scope.clienteActual.dni,
+                	 'idcliente': $scope.facturaActual.idcliente,
+                    'fecha': $scope.facturaActual.fecha,
+                    'nrofactura':$scope.facturaActual.nrofactura
                 }
             }).success(function (data, status, headers, config) {
 
@@ -135,11 +150,11 @@ app.controller("clienteCtrl", ['$scope', '$http', function ($scope, $http)
         if (x) {
             $http({
             	 method: 'PUT',
-                 url: '/apicliente/erase/' + $scope.clienteActual.id,
+                 url: '/apifactura/erase/' + $scope.facturaActual.id,
                  
                 data: {
-                    'id' : $scope.clienteActual.id,
-                    'estado': $scope.clienteActual.estado,
+                    'id' : $scope.facturaActual.id,
+                    'estado': $scope.facturaActual.estado,
                 }
             }).success(function (data, status, headers, config) {
 
@@ -159,13 +174,19 @@ app.controller("clienteCtrl", ['$scope', '$http', function ($scope, $http)
 
     $scope.primero = function () {
         idx = 0;
-        $scope.clienteActual = $scope.clientes[idx];
+        $scope.facturaActual = $scope.facturas[idx];
     };
     
 
      $scope.ultimo = function () {
         //El ultimo elemento se determina por la longitud del array (lenght)
-        idx = $scope.clientes.length - 1;
-        $scope.clienteActual = $scope.clientes[idx];
+        idx = $scope.facturas.length - 1;
+        $scope.facturaActual = $scope.facturas[idx];
     };
+    function addZero(i) {
+	    if (i < 10) {
+	        i = '0' + i;
+	    }
+	    return i;
+	}
 }]);
